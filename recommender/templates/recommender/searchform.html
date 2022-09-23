@@ -3,7 +3,12 @@
 {% block title %} Music Search {% endblock %}
 
 {% block content %}
-<form method='post' action="/recommender/bestp/">
+<!-- 
+    Note the url syntax below. It specifies that the "best" url 
+    from the recommender app, which is written as recommender:best
+-->
+
+<form method='post' action="{% url 'recommender:best' %}">
     {% csrf_token %}
     <br>
     <center>
@@ -23,6 +28,9 @@
     </div>
     <br>
 
+    <!-- 
+        Specify bootstrap class to get desired bootstrap formatting
+    -->
     <button class="btn btn-primary btn-lg" type="submit">Submit</button>
 
 </form>
