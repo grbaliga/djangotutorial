@@ -6,7 +6,7 @@ db.sqlite3
 temp/*
 
 # Virtual environment
-djangotutorialenv/*
+env/*
 
 # Any static data files
 *.csv  

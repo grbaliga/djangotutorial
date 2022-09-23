@@ -1,9 +1,9 @@
-from re import A
+
 from recommender.forms import SearchForm
 from django.shortcuts import render
 from django.http import Http404
-from .models import *
-from .forms import *
+from .models import Musicdata
+from .forms import SearchForm
 import random
 
 
@@ -13,10 +13,21 @@ def find_albums(artist, from_year = None, to_year = None):
         query = query.filter(year__gte = from_year)
     if to_year is not None:
         query = query.filter(year__lte = to_year)
-    return list(query.order_by('-popularity').values('id','name','year'))
+    return list(query.order_by('-popularity').values('id'))
     
 
-def searchform(request):
+def find_album_by_name(album):
+    query = Musicdata.objects.filter(name__contains = album).values('id','name')
+    resp = list(query)
+    # Randomize to get different results each time
+    random.shuffle(resp) 
+    # Return the id of up to 3 albums
+    return { 
+        'albums': [item['id'] for item in resp[:3]]
+    }
+
+
+def get_artist(request):
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = SearchForm(request.POST)
@@ -35,10 +46,21 @@ def searchform(request):
             answer = albums[:10]
             random.shuffle(answer)
             answer = list(answer)[:3] 
-            return render(request, 'recommender/searchform.html', {'form': form, 'albums': answer })
+            return render(request, 'recommender/artist.html', {'form': form, 'albums': answer })
         else:
             raise Http404('Something went wrong')
     else:
         form = SearchForm()
-        return render(request, 'recommender/searchform.html', {'form': form})
+        return render(request, 'recommender/artist.html', {'form': form})
 
+def get_album(request):
+    if request.method == 'GET':
+        album = request.GET.get('album', None)
+        if album is None:
+            return render(request, "recommender/album.html", {})
+        else:
+            albums = {}
+            if album != "":
+                albums = find_album_by_name(album)
+            return render(request, "recommender/results.html", albums)
+  

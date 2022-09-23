@@ -4,6 +4,7 @@ from . import views
 app_name = 'recommender'
 
 urlpatterns = [
-    path('best/', views.searchform, name='best'),
+    path('artist/', views.get_artist, name='get_artist'),
+    path('album/', views.get_album, name='get_album'),
 ]
  
