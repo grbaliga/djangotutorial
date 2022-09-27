@@ -8,22 +8,22 @@ import random
 
 
 def find_albums(artist, from_year = None, to_year = None):
-    query = Musicdata.objects.filter(artists__contains = artist)
+    query = Musicdata.objects.filter(track_artist__contains = artist)
     if from_year is not None:
-        query = query.filter(year__gte = from_year)
+        query = query.filter(track_album_release_date__gte = from_year)
     if to_year is not None:
-        query = query.filter(year__lte = to_year)
-    return list(query.order_by('-popularity').values('id'))
+        query = query.filter(track_album_release_date__lte = to_year)
+    return list(query.order_by('-track_popularity').values('track_id'))
     
 
 def find_album_by_name(album):
-    query = Musicdata.objects.filter(name__contains = album).values('id','name')
+    query = Musicdata.objects.filter(track_name__contains = album).values('track_id')
     resp = list(query)
     # Randomize to get different results each time
     random.shuffle(resp) 
     # Return the id of up to 3 albums
     return { 
-        'albums': [item['id'] for item in resp[:3]]
+        'albums': [item['track_id'] for item in resp[:3]]
     }
 
 
