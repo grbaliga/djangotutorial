@@ -13,7 +13,7 @@ from recommender.models import Musicdata
 def import_data():
     print("Please input csv file name: ")
     filename = input()
-    songs = open(filename)
+    songs = open(filename, encoding='utf-8')
     csvfile = csv.DictReader(songs)
 
     id = 1
